@@ -24,6 +24,9 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+    - protolude
+    - containers
 
 executables:
   happy-holidays-exe:
@@ -35,6 +38,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - happy-holidays
+    - protolude
 
 tests:
   happy-holidays-test:
