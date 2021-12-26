@@ -9,8 +9,12 @@ import qualified Data.Set as Set
 
 type LetterMap = Map Char Char
 
-letters :: [Char]
-letters = ['a', 'd', 'h', 'i', 'l', 'o', 'p', 's', 'y']
+letters :: String
+        -> String
+        -> String
+        -> Set Char
+letters word1 word2 word3 =
+  Set.unions [Set.fromList word1, Set.fromList word2, Set.fromList word3]
 
 numbers :: [Char]
 numbers = "0123456789"
@@ -19,8 +23,8 @@ perms :: [[Char]]
 perms = take 9 <$> permutations numbers
 
 -- |Return the list of all LetterMaps for the given set of characters.
-mappings :: [LetterMap]
-mappings = Map.fromList <$> f <$> zip (repeat letters) perms
+mappings :: Set Char -> [LetterMap]
+mappings chars = Map.fromList <$> f <$> zip (repeat $ Set.toList chars) perms
   where f :: ([Char], [Char]) -> [(Char, Char)]
         f (cs, is) = zip cs is
 
@@ -44,4 +48,7 @@ toInt lm word = read . fromJust $ traverse (flip Map.lookup lm) word
 -- word.
 solve :: String -> String -> String -> [LetterMap]
 solve word1 word2 sum =
-  [lm | lm <- mappings, isSolution lm word1 word2 sum]
+  let chars = letters word1 word2 sum
+  in if length chars > 10
+     then error $ "The words " <> word1 <> ", " <> word2 <> " and " <> sum <> " have more than 10 unique characters."
+     else [lm | lm <- mappings chars, isSolution lm word1 word2 sum]
